@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Example Daily Status Report Output </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Example Daily Status Report Output ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/NikolajBjorner/msquic/blob/main/docs/Daily-Status-Example.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="example-daily-status-report-output">Example Daily Status Report Output</h1>
+
+<p>This document shows an example of what the Daily Status Report workflow generates.</p>
+<h2 id="sample-report">Sample Report</h2>
+<pre><code class="lang-markdown"># 📊 MsQuic Daily Status Report
+
+**Generated:** 2026-01-30 09:00 UTC
+**Repository:** NikolajBjorner/msquic
+
+---
+
+### File Statistics
+
+- C/C++ files: 617
+- PowerShell scripts: 44
+- CMake files: 39
+
+### Recent Commit Activity (Last 24 Hours)
+
+- Commits in last 24 hours: 3
+
+Recent commits:
+</code></pre>
+<p>277871e Add workflow validation documentation
+41aca05 Add daily status workflow with GitHub Actions
+e757fc5 Initial plan</p>
+<pre><code>
+### Branch Information
+
+- Current branch: `main`
+- Total branches: 45
+
+### Latest Commit
+
+- **Commit:** `277871e`
+- **Author:** Developer Name
+- **Date:** 2 hours ago
+- **Message:** Add workflow validation documentation
+
+### Recent Workflow Status
+
+| Workflow | Status | Date | Link |
+|----------|--------|------|------|
+| Build | ✅ success | 2026-01-30 08:45 | [View](https://github.com/...) |
+| Test | ✅ success | 2026-01-30 08:30 | [View](https://github.com/...) |
+| CodeQL | ✅ success | 2026-01-29 17:00 | [View](https://github.com/...) |
+| Code Coverage | ⚠️ cancelled | 2026-01-29 15:20 | [View](https://github.com/...) |
+| Docker Publish | ✅ success | 2026-01-29 12:10 | [View](https://github.com/...) |
+
+### Open Issues and Pull Requests
+
+- Open Issues: 87
+- Open Pull Requests: 12
+
+### Recently Updated Issues (Last 7 Days)
+
+- [#1234](https://github.com/.../issues/1234) Fix memory leak in connection handling - open
+- [#1233](https://github.com/.../issues/1233) Update documentation for API changes - closed
+- [#1232](https://github.com/.../issues/1232) Performance regression in v2.3.0 - open
+- [#1231](https://github.com/.../issues/1231) Add support for new TLS extensions - open
+- [#1230](https://github.com/.../issues/1230) CI/CD pipeline improvements - closed
+
+---
+
+*This report is automatically generated daily by the [Daily Status workflow](https://github.com/NikolajBjorner/msquic/actions/workflows/daily-status.yml).*
+</code></pre>
+<h2 id="github-issue-format">GitHub Issue Format</h2>
+<p>When the workflow runs, it creates a GitHub issue with:</p>
+<ul>
+<li><strong>Title</strong>: <code>Daily Status Report - YYYY-MM-DD</code></li>
+<li><strong>Label</strong>: <code>daily-status</code></li>
+<li><strong>Body</strong>: The markdown report above</li>
+</ul>
+<p>If an issue for the current date already exists, the workflow adds the updated report as a comment to the existing issue rather than creating a new one. This prevents duplicate issues and keeps all daily updates organized.</p>
+<h2 id="artifact">Artifact</h2>
+<p>The workflow also uploads the report as a build artifact that can be downloaded from the GitHub Actions run page. The artifact is retained for 30 days.</p>
+<h2 id="use-cases">Use Cases</h2>
+<ol>
+<li><strong>Daily Health Check</strong>: Quick overview of repository activity and CI/CD health</li>
+<li><strong>Team Standup</strong>: Reference for discussing recent changes and issues</li>
+<li><strong>Trend Analysis</strong>: Compare reports over time to track project evolution</li>
+<li><strong>Onboarding</strong>: New contributors can review recent reports to understand project activity</li>
+<li><strong>Management Reporting</strong>: High-level metrics for stakeholders</li>
+</ol>
+<h2 id="notifications">Notifications</h2>
+<p>Team members can subscribe to the <code>daily-status</code> label to receive notifications when new reports are posted.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/NikolajBjorner/msquic/blob/main/docs/Daily-Status-Example.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

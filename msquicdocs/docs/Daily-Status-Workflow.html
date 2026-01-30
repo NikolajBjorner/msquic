@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Daily Status Workflow </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Daily Status Workflow ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/NikolajBjorner/msquic/blob/main/docs/Daily-Status-Workflow.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="daily-status-workflow">Daily Status Workflow</h1>
+
+<p>This workflow provides automated daily status reports for the MsQuic repository.</p>
+<h2 id="overview">Overview</h2>
+<p>The Daily Status workflow runs automatically every day at 9:00 AM UTC and generates a comprehensive status report that includes:</p>
+<ul>
+<li><strong>File Statistics</strong>: Count of C/C++ files, PowerShell scripts, and CMake files</li>
+<li><strong>Recent Commit Activity</strong>: Commits from the last 24 hours</li>
+<li><strong>Branch Information</strong>: Current branch and total branch count</li>
+<li><strong>Latest Commit</strong>: Details about the most recent commit</li>
+<li><strong>Recent Workflow Status</strong>: Status of the last 10 workflow runs on the main branch</li>
+<li><strong>Open Issues and Pull Requests</strong>: Current count of open issues and PRs</li>
+<li><strong>Recently Updated Issues</strong>: Issues updated in the last 7 days</li>
+</ul>
+<h2 id="how-it-works">How It Works</h2>
+<ol>
+<li><strong>Scheduled Execution</strong>: The workflow runs daily via GitHub Actions cron schedule</li>
+<li><strong>Report Generation</strong>: Uses the <code>scripts/generate-daily-status.sh</code> script to collect repository metrics</li>
+<li><strong>Workflow Status</strong>: Queries the GitHub API to get recent workflow run statuses</li>
+<li><strong>Issue Tracking</strong>: Fetches open issues and PRs from the GitHub API</li>
+<li><strong>Issue Creation</strong>: Creates a new GitHub issue with the report or updates the existing one for the day</li>
+<li><strong>Artifact Upload</strong>: Saves the report as an artifact for 30 days</li>
+</ol>
+<h2 id="manual-execution">Manual Execution</h2>
+<p>You can manually trigger the workflow in two ways:</p>
+<h3 id="via-github-actions-ui">Via GitHub Actions UI</h3>
+<ol>
+<li>Go to the Actions tab in the repository</li>
+<li>Select &quot;Daily Status Report&quot; from the workflows list</li>
+<li>Click &quot;Run workflow&quot; and select the branch</li>
+</ol>
+<h3 id="via-github-cli">Via GitHub CLI</h3>
+<pre><code class="lang-bash">gh workflow run daily-status.yml
+</code></pre>
+<h2 id="local-testing">Local Testing</h2>
+<p>You can generate a status report locally using the script:</p>
+<pre><code class="lang-bash">cd /path/to/msquic
+./scripts/generate-daily-status.sh output_report.md
+</code></pre>
+<p>This will create a basic status report without the GitHub-specific information (workflow runs, issues, PRs).</p>
+<h3 id="validating-the-workflow">Validating the Workflow</h3>
+<p>To validate the workflow file syntax:</p>
+<pre><code class="lang-bash"># Check YAML syntax
+python3 -c &quot;import yaml; yaml.safe_load(open('.github/workflows/daily-status.yml'))&quot;
+
+# Or use yamllint if available
+yamllint .github/workflows/daily-status.yml
+</code></pre>
+<p>Note: The workflow file uses <code>on:</code> as a trigger keyword, which YAML parsers may interpret as a boolean. This is expected and GitHub Actions handles it correctly.</p>
+<h2 id="permissions">Permissions</h2>
+<p>The workflow requires the following permissions:</p>
+<ul>
+<li><code>contents: read</code> - To checkout the repository</li>
+<li><code>issues: write</code> - To create and update status report issues</li>
+<li><code>actions: read</code> - To query workflow run status</li>
+</ul>
+<h2 id="output">Output</h2>
+<p>The workflow produces two outputs:</p>
+<ol>
+<li><strong>GitHub Issue</strong>: Creates a daily issue with the status report (labeled as &quot;daily-status&quot;). If an issue for the current date already exists, the workflow adds the report as a comment to the existing issue rather than creating a new one.</li>
+<li><strong>Artifact</strong>: A markdown file uploaded as a workflow artifact (retained for 30 days)</li>
+</ol>
+<h2 id="files">Files</h2>
+<ul>
+<li><code>.github/workflows/daily-status.yml</code> - The GitHub Actions workflow definition</li>
+<li><code>scripts/generate-daily-status.sh</code> - Shell script to generate the basic status report</li>
+</ul>
+<h2 id="customization">Customization</h2>
+<p>You can customize the workflow by:</p>
+<ul>
+<li>Changing the schedule in the workflow file (cron expression)</li>
+<li>Modifying the report sections in <code>scripts/generate-daily-status.sh</code></li>
+<li>Adding additional metrics or checks in the workflow steps</li>
+<li>Changing the retention period for artifacts (default: 30 days)</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>If the workflow fails:</p>
+<ol>
+<li>Check the workflow run logs in the Actions tab</li>
+<li>Verify that the repository has the required permissions</li>
+<li>Ensure the GitHub API is accessible</li>
+<li>Test the <code>generate-daily-status.sh</code> script locally</li>
+</ol>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<p>Potential improvements for the workflow:</p>
+<ul>
+<li>Add code coverage metrics</li>
+<li>Include test results summary</li>
+<li>Track release information</li>
+<li>Monitor security alerts</li>
+<li>Send notifications via Slack/email</li>
+<li>Generate trend charts over time</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/NikolajBjorner/msquic/blob/main/docs/Daily-Status-Workflow.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
