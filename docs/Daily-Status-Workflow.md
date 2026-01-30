@@ -48,6 +48,20 @@ cd /path/to/msquic
 
 This will create a basic status report without the GitHub-specific information (workflow runs, issues, PRs).
 
+### Validating the Workflow
+
+To validate the workflow file syntax:
+
+```bash
+# Check YAML syntax
+python3 -c "import yaml; yaml.safe_load(open('.github/workflows/daily-status.yml'))"
+
+# Or use yamllint if available
+yamllint .github/workflows/daily-status.yml
+```
+
+Note: The workflow file uses `on:` as a trigger keyword, which YAML parsers may interpret as a boolean. This is expected and GitHub Actions handles it correctly.
+
 ## Permissions
 
 The workflow requires the following permissions:
