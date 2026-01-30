@@ -72,7 +72,7 @@ The workflow requires the following permissions:
 ## Output
 
 The workflow produces two outputs:
-1. **GitHub Issue**: A daily issue with the status report (labeled as "daily-status")
+1. **GitHub Issue**: Creates a daily issue with the status report (labeled as "daily-status"). If an issue for the current date already exists, the workflow adds the report as a comment to the existing issue rather than creating a new one.
 2. **Artifact**: A markdown file uploaded as a workflow artifact (retained for 30 days)
 
 ## Files

@@ -19,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          fetch-depth: 1
+          fetch-depth: 50  # Fetch recent history for commit activity analysis
 
       - name: Generate Basic Status Report
         id: repo-stats
@@ -59,8 +59,8 @@ jobs:
                 status_emoji="⏳"
               fi
               
-              # Format date to be more readable
-              formatted_date=$(date -d "$date" '+%Y-%m-%d %H:%M' 2>/dev/null || echo "$date")
+              # Format date to be more readable (with fallback for macOS/BSD)
+              formatted_date=$(date -d "$date" '+%Y-%m-%d %H:%M' 2>/dev/null || date -j -f '%Y-%m-%dT%H:%M:%SZ' "$date" '+%Y-%m-%d %H:%M' 2>/dev/null || echo "$date")
               
               echo "| $name | $status_emoji $conclusion | $formatted_date | [View]($url) |" >> base_report.md
             done < workflow_runs.txt
@@ -76,27 +76,19 @@ jobs:
           echo "### Open Issues and Pull Requests" >> base_report.md
           echo "" >> base_report.md
           
-          # Count open issues
+          # Count open issues using search API for accurate count
           OPEN_ISSUES=$(gh api \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/issues?state=open&per_page=1 \
-            -i | grep -i "^link:" | sed 's/.*page=\([0-9]*\)>; rel="last".*/\1/' || echo "0")
+            "/search/issues?q=repo:${{ github.repository }}+type:issue+state:open" \
+            --jq '.total_count' 2>/dev/null || echo "0")
           
-          if [ -z "$OPEN_ISSUES" ]; then
-            OPEN_ISSUES="0"
-          fi
-          
-          # Count open PRs
+          # Count open PRs using search API for accurate count
           OPEN_PRS=$(gh api \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/pulls?state=open&per_page=1 \
-            -i | grep -i "^link:" | sed 's/.*page=\([0-9]*\)>; rel="last".*/\1/' || echo "0")
-          
-          if [ -z "$OPEN_PRS" ]; then
-            OPEN_PRS="0"
-          fi
+            "/search/issues?q=repo:${{ github.repository }}+type:pr+state:open" \
+            --jq '.total_count' 2>/dev/null || echo "0")
           
           echo "- Open Issues: $OPEN_ISSUES" >> base_report.md
           echo "- Open Pull Requests: $OPEN_PRS" >> base_report.md
