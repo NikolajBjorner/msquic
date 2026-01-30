@@ -1,0 +1,160 @@
+name: Daily Status Report
+
+on:
+  schedule:
+    # Run daily at 9:00 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch:  # Allow manual trigger for testing
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  generate-status:
+    name: Generate Daily Status Report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 1
+
+      - name: Generate Basic Status Report
+        id: repo-stats
+        run: |
+          # Run the status generation script
+          chmod +x scripts/generate-daily-status.sh
+          ./scripts/generate-daily-status.sh base_report.md
+
+      - name: Check Recent Workflow Runs
+        id: workflow-status
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "" >> base_report.md
+          echo "### Recent Workflow Status" >> base_report.md
+          echo "" >> base_report.md
+          
+          # Get the last 10 workflow runs from main branch
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/actions/runs?per_page=10&branch=main \
+            --jq '.workflow_runs[] | "\(.name)|\(.conclusion)|\(.created_at)|\(.html_url)"' > workflow_runs.txt
+          
+          if [ -s workflow_runs.txt ]; then
+            echo "| Workflow | Status | Date | Link |" >> base_report.md
+            echo "|----------|--------|------|------|" >> base_report.md
+            
+            while IFS='|' read -r name conclusion date url; do
+              if [ "$conclusion" = "success" ]; then
+                status_emoji="✅"
+              elif [ "$conclusion" = "failure" ]; then
+                status_emoji="❌"
+              elif [ "$conclusion" = "cancelled" ]; then
+                status_emoji="⚠️"
+              else
+                status_emoji="⏳"
+              fi
+              
+              # Format date to be more readable
+              formatted_date=$(date -d "$date" '+%Y-%m-%d %H:%M' 2>/dev/null || echo "$date")
+              
+              echo "| $name | $status_emoji $conclusion | $formatted_date | [View]($url) |" >> base_report.md
+            done < workflow_runs.txt
+          else
+            echo "No recent workflow runs found." >> base_report.md
+          fi
+          echo "" >> base_report.md
+
+      - name: Check Open Issues and PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "### Open Issues and Pull Requests" >> base_report.md
+          echo "" >> base_report.md
+          
+          # Count open issues
+          OPEN_ISSUES=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/issues?state=open&per_page=1 \
+            -i | grep -i "^link:" | sed 's/.*page=\([0-9]*\)>; rel="last".*/\1/' || echo "0")
+          
+          if [ -z "$OPEN_ISSUES" ]; then
+            OPEN_ISSUES="0"
+          fi
+          
+          # Count open PRs
+          OPEN_PRS=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/pulls?state=open&per_page=1 \
+            -i | grep -i "^link:" | sed 's/.*page=\([0-9]*\)>; rel="last".*/\1/' || echo "0")
+          
+          if [ -z "$OPEN_PRS" ]; then
+            OPEN_PRS="0"
+          fi
+          
+          echo "- Open Issues: $OPEN_ISSUES" >> base_report.md
+          echo "- Open Pull Requests: $OPEN_PRS" >> base_report.md
+          echo "" >> base_report.md
+          
+          # Get recently updated issues
+          echo "### Recently Updated Issues (Last 7 Days)" >> base_report.md
+          echo "" >> base_report.md
+          
+          SEVEN_DAYS_AGO=$(date -u -d '7 days ago' '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u -v-7d '+%Y-%m-%dT%H:%M:%SZ')
+          
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${{ github.repository }}/issues?state=all&since=$SEVEN_DAYS_AGO&per_page=5&sort=updated" \
+            --jq '.[] | "- [#\(.number)](\(.html_url)) \(.title) - \(.state)"' >> base_report.md || echo "No recent issues found." >> base_report.md
+          
+          echo "" >> base_report.md
+
+      - name: Generate Summary
+        run: |
+          # The base report already has headers, just add a footer
+          cp base_report.md final_report.md
+          
+          # Add footer
+          cat >> final_report.md << EOF
+          
+          ---
+          
+          *This report is automatically generated daily by the [Daily Status workflow](${{ github.server_url }}/${{ github.repository }}/actions/workflows/daily-status.yml).*
+          EOF
+          
+          echo "Final report generated:"
+          cat final_report.md
+
+      - name: Create Issue with Status Report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ISSUE_TITLE="Daily Status Report - $(date -u '+%Y-%m-%d')"
+          
+          # Check if an issue with today's date already exists
+          EXISTING_ISSUE=$(gh issue list --search "in:title \"Daily Status Report - $(date -u '+%Y-%m-%d')\"" --json number --jq '.[0].number')
+          
+          if [ -n "$EXISTING_ISSUE" ] && [ "$EXISTING_ISSUE" != "null" ]; then
+            echo "Issue #$EXISTING_ISSUE already exists for today, updating it..."
+            gh issue comment $EXISTING_ISSUE --body-file final_report.md
+          else
+            echo "Creating new issue..."
+            gh issue create \
+              --title "$ISSUE_TITLE" \
+              --body-file final_report.md \
+              --label "daily-status"
+          fi
+
+      - name: Upload Report as Artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        with:
+          name: daily-status-report-${{ github.run_number }}
+          path: final_report.md
+          retention-days: 30
